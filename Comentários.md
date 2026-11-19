@@ -1,100 +1,122 @@
 
-# Devolutiva formativa — Atividade 01 da SA
+# Devolutiva formativa — Atividade 02 da SA
 
-**Estudante:** Matheus Brey  
+**Estudante:** Matheus Henrique Brey  
 **Turma:** Rio Negrinho — Manhã  
 **Unidade Curricular:** Programação de Aplicativos  
-**Projeto:** Delivery de Comida — EuComida / Cantina do Zé  
-**Código analisado:** `codigo/app.py`  
-**Referência:** Situação de Aprendizagem nº 1 — *Da Ideia ao Código*
+**Projeto:** EuComida — Delivery  
+**Atividade:** Interface funcional  
+**Arquivos analisados:** `interface/index.html` e `codigo/app.py`
 
 ## O que você já conseguiu desenvolver
 
-Matheus, você desenvolveu uma aplicação de delivery com cadastro, login, cardápio, carrinho, pagamento simulado e acompanhamento de pedidos. O projeto demonstra compreensão de diferentes regras de negócio e de como organizar uma sequência de operações.
+Matheus, você criou uma interface web com diferentes funcionalidades relacionadas a um sistema de delivery.
+
+O projeto apresenta cadastro, login demonstrativo, cardápio, carrinho e opções de pagamento simulado.
 
 Pontos positivos identificados:
 
-- Organizou o código em funções como `entrar()`, `cadastrar()`, `cardapio()`, `ver_carrinho()`, `pagar()`, `finalizar()` e `acompanhar()`.
-- Utilizou **listas e dicionários** para representar produtos, usuários, carrinho e histórico de pedidos.
-- Criou categorias para organizar o cardápio.
-- Implementou regras de pedido mínimo, taxa de entrega e frete grátis.
-- Permitiu adicionar produtos ao carrinho e remover unidades.
-- Criou diferentes opções de pagamento simulado.
-- Implementou etapas de acompanhamento do pedido.
-- Utilizou **condicionais, repetições, funções e tratamento de entradas numéricas**.
-- Incluiu comentários que identificam as funcionalidades.
+- Criou formulários para cadastro e entrada de usuários.
+- Organizou produtos em categorias.
+- Desenvolveu recursos para aumentar e diminuir quantidades.
+- Implementou atualização dos valores do carrinho.
+- Criou funções para calcular subtotal e taxa de entrega.
+- Implementou diferentes formas de pagamento demonstrativas.
+- Incluiu validações de campos obrigatórios.
+- Utilizou JavaScript para controlar as ações e atualizar os elementos da página.
+- Aplicou funções reutilizáveis para cálculos e atualização dos resultados.
+- Utilizou `localStorage` para armazenar determinadas informações.
+- Criou uma interface com diferentes telas e componentes interativos.
+
+## Comparação com a devolutiva anterior
+
+### 1. Interface interativa — ATENDIDO
+
+A avaliação anterior reconheceu as funcionalidades existentes no Python.
+
+Agora essas operações foram representadas em uma interface web que permite interação por meio de botões e formulários.
+
+### 2. Organização das funções — PARCIALMENTE ATENDIDO
+
+O JavaScript possui funções para cálculos, operações de carrinho e atualização da tela.
+
+Entretanto, grande parte do HTML, CSS e JavaScript permanece concentrada em `interface/index.html`.
+
+**Como melhorar:** distribuir o CSS em `style.css` e o JavaScript em `script.js`.
+
+### 3. Segurança das senhas — PENDENTE
+
+A devolutiva anterior recomendou evitar o armazenamento de senhas em texto simples.
+
+Na interface atual, os dados de login ainda são armazenados e comparados diretamente no navegador.
+
+**Como melhorar:** manter esse recurso identificado como demonstração educacional. Quando houver autenticação real, realizar a verificação no servidor e utilizar mecanismos apropriados de proteção.
+
+### 4. Identificação das simulações de pagamento — PARCIALMENTE ATENDIDO
+
+A interface apresenta diferentes formas de pagamento, mas algumas mensagens podem ser interpretadas como confirmação real.
+
+**Como melhorar:** informar claramente que os pagamentos são simulados e utilizar apenas dados fictícios.
 
 ## O que precisa ser corrigido
 
-### 1. Proteger as senhas dos usuários
+### 5. Não solicitar dados reais de cartão
 
-O cadastro armazena as senhas diretamente no dicionário `usuarios`, sem proteção. O programa também exige que a senha contenha somente letras, mas essa regra não torna a autenticação mais segura.
+A interface possui campos de número, validade e código de segurança do cartão.
 
-**Como melhorar:** utilizar uma função apropriada para gerar hashes de senha e outra para verificar as credenciais no login. Evitar guardar senhas em texto simples.
+**Como melhorar:** substituir a coleta de dados de cartão por uma seleção demonstrativa, sem solicitar informações financeiras reais.
 
-### 2. Identificar os pagamentos como simulações
+### 6. Melhorar a separação dos arquivos
 
-Na opção de Pix, o programa informa que o pagamento foi confirmado após o usuário pressionar Enter. Na opção de cartão, basta informar 16 dígitos para apresentar uma mensagem de aprovação.
+O arquivo HTML possui uma implementação extensa, incluindo estilos e JavaScript.
 
-Essas operações não verificam pagamentos reais.
+**Como melhorar:** separar a apresentação, os estilos e as interações em arquivos próprios. Isso facilita a leitura e a manutenção.
 
-**Como melhorar:** identificar claramente essas telas como simulações educacionais. Utilizar somente informações fictícias e não solicitar dados reais de cartão. Uma integração de pagamento exigiria mecanismos próprios, que não fazem parte da Atividade 01.
+### 7. Melhorar a integração com o Python
 
-### 3. Melhorar a identificação dos pedidos
+As ações da interface utilizam principalmente JavaScript e armazenamento local.
 
-O programa utiliza `random.randint(1000, 9999)` para gerar números de pedido. Isso não garante que dois pedidos diferentes receberão identificadores exclusivos.
-
-**Como melhorar:** utilizar um contador sequencial para a versão inicial ou outro mecanismo que assegure a identificação única.
+**Como melhorar:** documentar se a interface web é uma simulação independente ou se será conectada posteriormente à lógica do Python.
 
 ## Oportunidades de melhoria
 
-### 4. Diferenciar simulação de acompanhamento em tempo real
+### 8. Ampliar os testes
 
-A função `acompanhar()` apresenta etapas do pedido após intervalos de tempo definidos no código. Isso é útil para demonstrar o fluxo, mas não representa uma atualização real da entrega.
+**Como melhorar:** verificar os valores do carrinho, os limites das quantidades, a aplicação da taxa de entrega e o comportamento das diferentes opções de pagamento.
 
-**Como melhorar:** indicar que se trata de uma simulação e, futuramente, controlar as etapas por alterações explícitas de situação.
+### 9. Melhorar a documentação
 
-### 5. Melhorar o tratamento dos dados monetários
+**Como melhorar:** explicar o funcionamento da interface, a utilização do `localStorage` e os recursos que ainda são demonstrativos.
 
-Os preços e totais são calculados com `float`, o que pode produzir pequenas diferenças de precisão em operações financeiras.
+### 10. Revisar a apresentação dos valores monetários
 
-**Como melhorar:** considerar o uso de `Decimal` ou valores em centavos. Para a versão inicial, conferir cuidadosamente os cálculos e a apresentação dos resultados.
-
-### 6. Modularizar o programa
-
-O código apresenta várias funções com responsabilidades reconhecíveis, mas concentra todas elas em um único arquivo.
-
-**Como melhorar:** separar gradualmente autenticação, cardápio, carrinho, pedidos e pagamentos simulados. Centralizar as regras de valores e validações.
-
-### 7. Melhorar a documentação e a verificação do código
-
-O README ainda contém principalmente as instruções gerais da atividade.
-
-**Como melhorar:** incluir as instruções de execução, as funcionalidades do EuComida, as regras do pedido mínimo e as limitações das simulações. Registrar os resultados de testes com entradas válidas e inválidas.
+**Como melhorar:** conferir arredondamentos, parcelas e valores exibidos no carrinho. A futura integração deverá manter os cálculos centralizados.
 
 ## Testes recomendados
 
-1. Cadastrar um usuário e testar o login.
-2. Tentar cadastrar um usuário já existente.
-3. Selecionar produtos de categorias diferentes.
-4. Adicionar e remover quantidades do carrinho.
-5. Tentar finalizar um pedido abaixo do valor mínimo.
-6. Conferir o cálculo do frete grátis.
-7. Testar as três opções de pagamento simulado.
-8. Verificar o histórico após concluir pedidos.
-9. Confirmar que dois pedidos possuem identificadores diferentes.
-10. Verificar as etapas simuladas de acompanhamento.
+1. Cadastrar um usuário fictício.
+2. Testar entradas inválidas no formulário.
+3. Realizar um login demonstrativo.
+4. Adicionar produtos de categorias diferentes.
+5. Aumentar e diminuir quantidades.
+6. Conferir subtotal, taxa e total.
+7. Alternar entre entrega e retirada.
+8. Simular pagamento em dinheiro com troco.
+9. Verificar as mensagens de Pix e cartão simulados.
+10. Atualizar a página e conferir os dados armazenados.
 
 ## Prioridades para a próxima versão
 
-1. **Corrigir o armazenamento das senhas.**
-2. **Identificar claramente os pagamentos como simulações.**
-3. **Garantir identificadores únicos para os pedidos.**
-4. **Revisar os cálculos monetários e o controle das situações.**
-5. **Complementar a documentação e criar testes das regras principais.**
+1. **Separar HTML, CSS e JavaScript.**
+2. **Não coletar informações reais de cartão.**
+3. **Identificar os pagamentos como simulações.**
+4. **Revisar a proteção dos dados de login.**
+5. **Documentar a relação entre a interface e o Python.**
 
 ## Mensagem final
 
-Matheus, seu trabalho demonstra compreensão de **funções, listas, dicionários, validação de entradas e regras de negócio**. Você conseguiu desenvolver um fluxo de delivery com várias etapas relacionadas.
+Matheus, sua interface demonstra conhecimento de eventos, funções, manipulação de elementos HTML e cálculos relacionados ao delivery.
 
-Continue aprimorando principalmente a segurança das informações, a clareza das simulações e a confiabilidade dos cálculos. Você já possui uma boa base para desenvolver as próximas funcionalidades do sistema.
+Você conseguiu transformar diferentes etapas do sistema em recursos interativos.
+
+Continue aprimorando a organização do código, a clareza das simulações e a proteção das informações utilizadas.
