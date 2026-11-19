@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>projeto</title>
+  <style>
+    body { margin: 0; min-height: 100vh; background: linear-gradient(to right, darkblue, darkgreen); font-family: Arial, sans-serif; color: #fff8e7; }
+    h1 { font-size: 96px; text-align: center; margin: 20px 0; }
+
+    .botoes { display: flex; flex-direction: column; align-items: center; gap: 23px; }
+    button { background-color: transparent; width: 200px; padding: 12px 32px; font-size: 22px; cursor: pointer; color: #fff8e7; }
+
+    /* Botão Cadastrar empresa */
+    .btn-empresa { position: fixed; top: 16px; right: 16px; z-index: 10; width: auto; padding: 10px 18px; font-size: 16px; border: 2px solid #fff8e7; border-radius: 8px; }
+    .btn-empresa:hover { background-color: rgba(255,255,255,0.2); }
+
+    /* Modal */
+    .modal { display: none; position: fixed; inset: 0; z-index: 20; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+    .modal.visivel { display: flex; }
+    .modal form { display: flex; flex-direction: column; gap: 12px; width: 340px; max-width: 100%; padding: 30px; background: #14304a; border-radius: 12px; }
+    .modal h2 { text-align: center; margin: 0 0 6px; }
+    .modal input { padding: 12px; font-size: 16px; border: none; border-radius: 8px; }
+    .modal button { width: 100%; padding: 12px; font-size: 18px; border: 2px solid #fff8e7; border-radius: 8px; }
+    .modal button:hover { background-color: rgba(255,255,255,0.2); }
+    #msgEmpresa { text-align: center; margin: 0; min-height: 20px; }
+    #msgEmpresa.erro { color: #fca5a5; }
+
+    /* Formulários */
+    .formulario { display: none; flex-direction: column; gap: 15px; width: 320px; margin: 40px auto; padding: 30px; background-color: rgba(255,255,255,0.1); border-radius: 12px; }
+    .formulario.visivel { display: flex; }
+    .formulario h2 { text-align: center; margin: 0 0 10px; }
+    .formulario input { padding: 12px; font-size: 16px; border: none; border-radius: 8px; }
+    .formulario button { width: 100%; padding: 12px; font-size: 18px; border: 2px solid #fff8e7; border-radius: 8px; }
+
+    #mensagem { text-align: center; font-size: 22px; margin-top: 20px; }
+    #mensagem.erro { color: #fca5a5; }
+
+    /* Restaurante */
+    #restaurante { display: none; max-width: 1000px; margin: 0 auto; padding: 0 20px 40px; }
+    #restaurante.visivel { display: block; }
+    #restaurante h2 { margin-top: 0; }
+    .layout { display: flex; flex-wrap: wrap; gap: 24px; }
+    .coluna { flex: 1 1 380px; background: rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; }
+
+    .categoria { margin: 20px 0 4px; font-size: 20px; color: #fde68a; border-bottom: 2px solid #fde68a; padding-bottom: 4px; }
+    .categoria:first-child { margin-top: 0; }
+    .prato { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.2); }
+    .prato small { opacity: 0.8; }
+    .qtd { display: flex; align-items: center; gap: 10px; }
+    .qtd button { width: 36px; padding: 4px; font-size: 20px; border: 2px solid #fff8e7; border-radius: 8px; }
+
+    .linha { display: flex; justify-content: space-between; margin: 8px 0; }
+    .total { font-size: 24px; font-weight: bold; border-top: 2px solid #fff8e7; padding-top: 10px; }
+    .opcao { display: block; margin: 8px 0; cursor: pointer; }
+    #restaurante input[type="text"], #restaurante input[type="number"], #restaurante input[type="password"], #restaurante select {
+      width: 100%; box-sizing: border-box; padding: 10px; font-size: 16px; border: none; border-radius: 8px; margin-top: 6px;
+    }
+    #enderecoBox { display: none; margin: 10px 0; }
+    #boxPix p { margin: 8px 0 0; }
+    #restaurante .grande { width: 100%; margin-top: 15px; padding: 12px; font-size: 18px; border: 2px solid #fff8e7; border-radius: 8px; }
+    #msgPedido { margin-top: 12px; font-size: 18px; }
+    #msgPedido.erro { color: #fca5a5; }
+  </style>
+</head>
+<body>
+  <button class="btn-empresa" id="btnEmpresa">Cadastrar empresa</button>
+
+  <h1>EuComida</h1>
+
+  <div class="botoes" id="menuInicial">
+    <button id="btnCadastrar">Cadastrar</button>
+    <button id="btnEntrar">Entrar</button>
+    <button id="btnSair">Sair</button>
+  </div>
+
+  <form id="formCadastro" class="formulario">
+    <h2>Cadastro</h2>
+    <input type="text" id="nome" placeholder="Nome" required>
+    <input type="email" id="email" placeholder="E-mail" required>
+    <input type="password" id="senha" placeholder="Senha" minlength="6" required>
+    <input type="password" id="confirmarSenha" placeholder="Confirmar senha" required>
+    <button type="submit">Criar conta</button>
+  </form>
+
+  <form id="formLogin" class="formulario">
+    <h2>Entrar</h2>
+    <input type="email" id="emailLogin" placeholder="E-mail" required>
+    <input type="password" id="senhaLogin" placeholder="Senha" required>
+    <button type="submit">Entrar</button>
+  </form>
+
+  <p id="mensagem"></p>
+
+  <div class="modal" id="modalEmpresa">
+    <form id="formEmpresa">
+      <h2>Cadastrar empresa</h2>
+      <input type="text" id="empNome" placeholder="Nome da empresa" required>
+      <input type="text" id="empCnpj" placeholder="CNPJ (só números)" inputmode="numeric" maxlength="18" required>
+      <input type="email" id="empEmail" placeholder="E-mail da empresa" required>
+      <input type="tel" id="empTelefone" placeholder="Telefone" required>
+      <input type="text" id="empEndereco" placeholder="Endereço" required>
+      <p id="msgEmpresa"></p>
+      <button type="submit">Cadastrar</button>
+      <button type="button" id="btnFecharEmpresa">Fechar</button>
+    </form>
+  </div>
+
+  <section id="restaurante">
+    <h2 id="boasVindas"></h2>
+    <div class="layout">
+
+      <div class="coluna">
+        <h2>Cardápio</h2>
+        <div id="listaPratos"></div>
+      </div>
+
+      <div class="coluna">
+        <h2>Seu pedido</h2>
+        <div id="itensPedido"></div>
+
+        <p><strong>Como quer receber?</strong></p>
+        <label class="opcao"><input type="radio" name="tipo" value="entrega" checked> Entrega (+ R$ 6,00)</label>
+        <label class="opcao"><input type="radio" name="tipo" value="retirada"> Retirar no local (grátis)</label>
+
+        <div id="enderecoBox">
+          <input type="text" id="endereco" placeholder="Endereço de entrega (rua, número, bairro)">
+        </div>
+
+        <div class="linha"><span>Subtotal</span><span id="subtotal">R$ 0,00</span></div>
+        <div class="linha"><span>Entrega</span><span id="taxa">R$ 0,00</span></div>
+        <div class="linha total"><span>Total</span><span id="total">R$ 0,00</span></div>
+
+        <p><strong>Forma de pagamento</strong></p>
+        <label class="opcao"><input type="radio" name="pagamento" value="dinheiro" checked> Dinheiro</label>
+        <label class="opcao"><input type="radio" name="pagamento" value="pix"> Pix</label>
+        <label class="opcao"><input type="radio" name="pagamento" value="credito"> Cartão de crédito</label>
+        <label class="opcao"><input type="radio" name="pagamento" value="debito"> Cartão de débito</label>
+
+        <div id="boxDinheiro">
+          <input type="number" id="valorPago" placeholder="Quanto vai pagar? (R$)" min="0" step="0.01">
+          <div class="linha"><span>Troco</span><span id="troco">R$ 0,00</span></div>
+        </div>
+
+        <div id="boxPix" style="display:none">
+          <p>Copie o código e pague no app do seu banco:</p>
+          <input type="text" id="codigoPix" readonly>
+          <button type="button" class="grande" id="btnCopiarPix">Copiar código Pix</button>
+        </div>
+
+        <div id="boxCartao" style="display:none">
+          <input type="text" id="cartaoNumero" placeholder="Número do cartão" inputmode="numeric" maxlength="19">
+          <input type="text" id="cartaoNome" placeholder="Nome impresso no cartão">
+          <input type="text" id="cartaoValidade" placeholder="Validade (MM/AA)" maxlength="5" inputmode="numeric">
+          <input type="password" id="cartaoCvv" placeholder="CVV" maxlength="4" inputmode="numeric">
+          <div id="boxParcelas" style="display:none"><select id="parcelas"></select></div>
+        </div>
+
+        <button class="grande" id="btnFinalizar">Finalizar pedido</button>
+        <p id="msgPedido"></p>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    // ---------- Elementos ----------
+    const menuInicial = document.getElementById("menuInicial");
+    const formCadastro = document.getElementById("formCadastro");
+    const formLogin = document.getElementById("formLogin");
+    const mensagem = document.getElementById("mensagem");
+    const restaurante = document.getElementById("restaurante");
+    const modalEmpresa = document.getElementById("modalEmpresa");
+    const formEmpresa = document.getElementById("formEmpresa");
+    const msgEmpresa = document.getElementById("msgEmpresa");
+
+    let usuarioLogado = null;
+
+    // ---------- Auxiliares ----------
+    function mostrarMensagem(texto, erro = false) {
+      mensagem.textContent = texto;
+      mensagem.classList.toggle("erro", erro);
+    }
+    function lerLista(chave) {
+      try { return JSON.parse(localStorage.getItem(chave)) || []; }
+      catch (e) { return []; }
+    }
+    function salvarLista(chave, lista) { localStorage.setItem(chave, JSON.stringify(lista)); }
+    function dinheiro(valor) {
+      return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    }
+
+    // ---------- Botões principais ----------
+    document.getElementById("btnCadastrar").addEventListener("click", () => {
+      formLogin.classList.remove("visivel");
+      formCadastro.classList.toggle("visivel");
+      mostrarMensagem("");
+    });
+    document.getElementById("btnEntrar").addEventListener("click", () => {
+      formCadastro.classList.remove("visivel");
+      formLogin.classList.toggle("visivel");
+      mostrarMensagem("");
+    });
+    document.getElementById("btnSair").addEventListener("click", () => {
+      sair();
+      window.close(); // só funciona se a aba foi aberta por JavaScript
+    });
+
+    // ---------- Cadastro de empresa ----------
+    function fecharEmpresa() {
+      modalEmpresa.classList.remove("visivel");
+      formEmpresa.reset();
+      msgEmpresa.textContent = "";
+    }
+    document.getElementById("btnEmpresa").addEventListener("click", () => {
+      msgEmpresa.textContent = "";
+      modalEmpresa.classList.add("visivel");
+    });
+    document.getElementById("btnFecharEmpresa").addEventListener("click", fecharEmpresa);
+    modalEmpresa.addEventListener("click", (e) => { if (e.target === modalEmpresa) fecharEmpresa(); });
+
+    formEmpresa.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const nome = document.getElementById("empNome").value.trim();
+      const cnpj = document.getElementById("empCnpj").value.replace(/\D/g, "");
+      const email = document.getElementById("empEmail").value.trim().toLowerCase();
+      const telefone = document.getElementById("empTelefone").value.trim();
+      const endereco = document.getElementById("empEndereco").value.trim();
+
+      msgEmpresa.classList.add("erro");
+      if (cnpj.length !== 14) { msgEmpresa.textContent = "O CNPJ deve ter 14 números."; return; }
+
+      const empresas = lerLista("empresas");
+      if (empresas.some((emp) => emp.cnpj === cnpj)) { msgEmpresa.textContent = "Este CNPJ já está cadastrado."; return; }
+
+      empresas.push({ nome, cnpj, email, telefone, endereco });
+      salvarLista("empresas", empresas);
+
+      msgEmpresa.classList.remove("erro");
+      msgEmpresa.textContent = `Empresa "${nome}" cadastrada com sucesso!`;
+      formEmpresa.reset();
+    });
+
+    // ---------- Cadastro de usuário ----------
+    formCadastro.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const nome = document.getElementById("nome").value.trim();
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const senha = document.getElementById("senha").value;
+      const confirmar = document.getElementById("confirmarSenha").value;
+
+      if (nome === "") return mostrarMensagem("Digite seu nome.", true);
+      if (senha.length < 6) return mostrarMensagem("A senha deve ter pelo menos 6 caracteres.", true);
+      if (senha !== confirmar) return mostrarMensagem("As senhas não coincidem.", true);
+
+      const usuarios = lerLista("usuarios");
+      if (usuarios.some((u) => u.email === email)) return mostrarMensagem("Este e-mail já está cadastrado.", true);
+
+      usuarios.push({ nome, email, senha });
+      salvarLista("usuarios", usuarios);
+
+      mostrarMensagem(`Cadastro realizado! Agora é só entrar, ${nome}.`);
+      formCadastro.reset();
+      formCadastro.classList.remove("visivel");
+    });
+
+    // ---------- Login ----------
+    formLogin.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("emailLogin").value.trim().toLowerCase();
+      const senha = document.getElementById("senhaLogin").value;
+      const encontrado = lerLista("usuarios").find((u) => u.email === email && u.senha === senha);
+
+      if (encontrado) {
+        usuarioLogado = encontrado;
+        formLogin.reset();
+        abrirRestaurante();
+      } else {
+        mostrarMensagem("Não encontrado, tente novamente.", true);
+      }
+    });
+
+    // ---------- Telas ----------
+    function abrirRestaurante() {
+      menuInicial.style.display = "none";
+      formCadastro.classList.remove("visivel");
+      formLogin.classList.remove("visivel");
+      mostrarMensagem("");
+      document.getElementById("boasVindas").textContent = `Olá, ${usuarioLogado.nome}! O que vai pedir hoje?`;
+      carrinho = {};
+      desenharPratos();
+      atualizarPedido();
+      restaurante.classList.add("visivel");
+    }
+
+    function sair() {
+      usuarioLogado = null;
+      carrinho = {};
+      restaurante.classList.remove("visivel");
+      formCadastro.classList.remove("visivel");
+      formLogin.classList.remove("visivel");
+      formCadastro.reset();
+      formLogin.reset();
+      fecharEmpresa();
+      limparPagamento();
+      document.getElementById("endereco").value = "";
+      msgPedido.textContent = "";
+      mostrarMensagem("");
+      menuInicial.style.display = "flex";
+    }
+
+    // ---------- Restaurante ----------
+    const categorias = ["Pratos", "Bebidas", "Sobremesas"];
+    const pratos = [
+      { id: 1, categoria: "Pratos", nome: "Hambúrguer artesanal", desc: "Pão brioche, carne 180g e queijo", preco: 28.9 },
+      { id: 2, categoria: "Pratos", nome: "Pizza de calabresa", desc: "Média, 6 fatias", preco: 42.0 },
+      { id: 3, categoria: "Pratos", nome: "Macarrão à bolonhesa", desc: "Molho caseiro e parmesão", preco: 31.5 },
+      { id: 4, categoria: "Pratos", nome: "Salada Caesar", desc: "Frango grelhado e croutons", preco: 24.0 },
+      { id: 5, categoria: "Bebidas", nome: "Suco natural", desc: "Laranja ou limão, 500ml", preco: 8.5 },
+      { id: 6, categoria: "Bebidas", nome: "Refrigerante lata", desc: "350ml, gelado", preco: 6.0 },
+      { id: 7, categoria: "Bebidas", nome: "Água mineral", desc: "500ml, com ou sem gás", preco: 4.0 },
+      { id: 8, categoria: "Bebidas", nome: "Chá gelado", desc: "Limão ou pêssego, 500ml", preco: 7.0 },
+      { id: 9, categoria: "Bebidas", nome: "Cerveja long neck", desc: "355ml (venda para maiores de 18)", preco: 11.0 },
+      { id: 10, categoria: "Sobremesas", nome: "Pudim de leite", desc: "Fatia generosa", preco: 12.0 }
+    ];
+    const TAXA_ENTREGA = 6;
+    let carrinho = {};
+
+    const listaPratos = document.getElementById("listaPratos");
+    const itensPedido = document.getElementById("itensPedido");
+    const enderecoBox = document.getElementById("enderecoBox");
+    const valorPago = document.getElementById("valorPago");
+    const msgPedido = document.getElementById("msgPedido");
+    const boxDinheiro = document.getElementById("boxDinheiro");
+    const boxPix = document.getElementById("boxPix");
+    const boxCartao = document.getElementById("boxCartao");
+    const boxParcelas = document.getElementById("boxParcelas");
+    const selectParcelas = document.getElementById("parcelas");
+
+    function desenharPratos() {
+      listaPratos.innerHTML = "";
+      categorias.forEach((cat) => {
+        const titulo = document.createElement("h3");
+        titulo.className = "categoria";
+        titulo.textContent = cat;
+        listaPratos.appendChild(titulo);
+
+        pratos.filter((p) => p.categoria === cat).forEach((p) => {
+          const div = document.createElement("div");
+          div.className = "prato";
+          div.innerHTML = `
+            <div><strong>${p.nome}</strong><br><small>${p.desc}</small><br>${dinheiro(p.preco)}</div>
+            <div class="qtd">
+              <button data-id="${p.id}" data-acao="menos">−</button>
+              <span id="qtd-${p.id}">0</span>
+              <button data-id="${p.id}" data-acao="mais">+</button>
+            </div>`;
+          listaPratos.appendChild(div);
+        });
+      });
+    }
+
+    listaPratos.addEventListener("click", (e) => {
+      const botao = e.target.closest("button");
+      if (!botao) return;
+      const id = botao.dataset.id;
+      const atual = carrinho[id] || 0;
+      carrinho[id] = botao.dataset.acao === "mais" ? atual + 1 : Math.max(0, atual - 1);
+      if (carrinho[id] === 0) delete carrinho[id];
+      atualizarPedido();
+    });
+
+    function tipoEntrega() { return document.querySelector('input[name="tipo"]:checked').value; }
+    function formaPagamento() { return document.querySelector('input[name="pagamento"]:checked').value; }
+    function calcularSubtotal() { return pratos.reduce((soma, p) => soma + p.preco * (carrinho[p.id] || 0), 0); }
+    function calcularTaxa(subtotal) { return subtotal > 0 && tipoEntrega() === "entrega" ? TAXA_ENTREGA : 0; }
+
+    // ---------- Pagamento ----------
+    function atualizarParcelas(total) {
+      const escolhida = selectParcelas.value || "1";
+      selectParcelas.innerHTML = "";
+      for (let n = 1; n <= 3; n++) {
+        const op = document.createElement("option");
+        op.value = n;
+        op.textContent = `${n}x de ${dinheiro(total / n)} sem juros`;
+        selectParcelas.appendChild(op);
+      }
+      selectParcelas.value = escolhida;
+    }
+
+    function atualizarFormaPagamento(total) {
+      const forma = formaPagamento();
+      boxDinheiro.style.display = forma === "dinheiro" ? "block" : "none";
+      boxPix.style.display = forma === "pix" ? "block" : "none";
+      boxCartao.style.display = forma === "credito" || forma === "debito" ? "block" : "none";
+      boxParcelas.style.display = forma === "credito" ? "block" : "none";
+
+      // Código Pix fictício, só para demonstração
+      document.getElementById("codigoPix").value = `00020126EUCOMIDA5204000053039865406${total.toFixed(2)}5802BR6304ABCD`;
+      atualizarParcelas(total);
+    }
+
+    function limparPagamento() {
+      valorPago.value = "";
+      ["cartaoNumero", "cartaoNome", "cartaoValidade", "cartaoCvv"].forEach((id) => (document.getElementById(id).value = ""));
+    }
+
+    function atualizarPedido() {
+      pratos.forEach((p) => {
+        const el = document.getElementById(`qtd-${p.id}`);
+        if (el) el.textContent = carrinho[p.id] || 0;
+      });
+
+      const escolhidos = pratos.filter((p) => carrinho[p.id]);
+      itensPedido.innerHTML = escolhidos.length
+        ? escolhidos.map((p) => `<div class="linha"><span>${carrinho[p.id]}x ${p.nome}</span><span>${dinheiro(p.preco * carrinho[p.id])}</span></div>`).join("")
+        : "<p>Nenhum item escolhido ainda.</p>";
+
+      const subtotal = calcularSubtotal();
+      const taxa = calcularTaxa(subtotal);
+      const total = subtotal + taxa;
+
+      document.getElementById("subtotal").textContent = dinheiro(subtotal);
+      document.getElementById("taxa").textContent = dinheiro(taxa);
+      document.getElementById("total").textContent = dinheiro(total);
+      enderecoBox.style.display = tipoEntrega() === "entrega" ? "block" : "none";
+
+      const pago = parseFloat(valorPago.value) || 0;
+      document.getElementById("troco").textContent = pago > 0 && pago >= total ? dinheiro(pago - total) : "R$ 0,00";
+
+      atualizarFormaPagamento(total);
+    }
+
+    document.querySelectorAll('input[name="tipo"]').forEach((r) => r.addEventListener("change", atualizarPedido));
+    document.querySelectorAll('input[name="pagamento"]').forEach((r) => r.addEventListener("change", atualizarPedido));
+    valorPago.addEventListener("input", atualizarPedido);
+
+    document.getElementById("btnCopiarPix").addEventListener("click", () => {
+      const campo = document.getElementById("codigoPix");
+      campo.select();
+      if (navigator.clipboard) navigator.clipboard.writeText(campo.value);
+      msgPedido.classList.remove("erro");
+      msgPedido.textContent = "Código Pix copiado!";
+    });
+
+    // Coloca a barra automaticamente na validade
+    document.getElementById("cartaoValidade").addEventListener("input", (e) => {
+      let v = e.target.value.replace(/\D/g, "").slice(0, 4);
+      if (v.length > 2) v = v.slice(0, 2) + "/" + v.slice(2);
+      e.target.value = v;
+    });
+
+    function erroPedido(texto) {
+      msgPedido.textContent = texto;
+      msgPedido.classList.add("erro");
+    }
+
+    // ---------- Finalizar pedido ----------
+    document.getElementById("btnFinalizar").addEventListener("click", () => {
+      const subtotal = calcularSubtotal();
+      const total = subtotal + calcularTaxa(subtotal);
+      const forma = formaPagamento();
+      const endereco = document.getElementById("endereco").value.trim();
+
+      if (subtotal === 0) return erroPedido("Escolha pelo menos um item.");
+      if (tipoEntrega() === "entrega" && endereco === "") return erroPedido("Digite o endereço de entrega.");
+
+      let textoPagamento = "";
+
+      if (forma === "dinheiro") {
+        const pago = parseFloat(valorPago.value) || 0;
+        if (pago < total) return erroPedido(`Valor insuficiente. O total é ${dinheiro(total)}.`);
+        textoPagamento = `Pagamento em dinheiro. Troco: ${dinheiro(pago - total)}.`;
+
+      } else if (forma === "pix") {
+        textoPagamento = "Pagamento via Pix: aguardando confirmação.";
+
+      } else {
+        const numero = document.getElementById("cartaoNumero").value.replace(/\D/g, "");
+        const nomeCartao = document.getElementById("cartaoNome").value.trim();
+        const validade = document.getElementById("cartaoValidade").value;
+        const cvv = document.getElementById("cartaoCvv").value;
+
+        if (numero.length < 13 || numero.length > 19) return erroPedido("Número do cartão inválido.");
+        if (nomeCartao === "") return erroPedido("Digite o nome impresso no cartão.");
+        if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(validade)) return erroPedido("Validade inválida. Use MM/AA.");
+        if (!/^\d{3,4}$/.test(cvv)) return erroPedido("CVV inválido.");
+
+        if (forma === "credito") {
+          const n = parseInt(selectParcelas.value);
+          textoPagamento = `Cartão de crédito em ${n}x de ${dinheiro(total / n)}.`;
+        } else {
+          textoPagamento = "Cartão de débito aprovado.";
+        }
+      }
+
+      msgPedido.classList.remove("erro");
+      msgPedido.textContent =
+        (tipoEntrega() === "entrega" ? "Pedido confirmado! Chega em ~40 min. " : "Pedido confirmado! Retire em ~20 min. ")
+        + textoPagamento;
+
+      carrinho = {};
+      limparPagamento();
+      atualizarPedido();
+    });
+  </script>
+</body>
+</html>
